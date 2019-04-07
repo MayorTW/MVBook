@@ -8,3 +8,7 @@ commands:
     mvbook:
         usage: "Usage: /<command>"
         permission: mvbook.use
+
+permissions:
+    mvbook.use:
+        default: true
