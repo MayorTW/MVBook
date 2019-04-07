@@ -15,10 +15,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.utils.PermissionTools;
 
 public class MVBookPlugin extends JavaPlugin {
 
     MVWorldManager worldManager;
+    PermissionTools permTool;
 
     @Override
     public void onEnable() {
@@ -31,6 +33,7 @@ public class MVBookPlugin extends JavaPlugin {
         }
 
         worldManager = mvPlugin.getCore().getMVWorldManager();
+        permTool = new PermissionTools(mvPlugin.getCore());
     }
 
     @Override
@@ -41,9 +44,9 @@ public class MVBookPlugin extends JavaPlugin {
             LinkedList<String> lines = new LinkedList<String>();
 
             for(MultiverseWorld world : worldManager.getMVWorlds()) {
+                if(!checkPermission((Player) sender, world)) continue;
                 String name = world.getName();
-                if(!sender.hasPermission("multiverse.teleport.*") && !sender.hasPermission("multiverse.teleport." + name)) continue;
-                lines.add("{\"text\":\"" + name + "\\n\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp " + name + "\"}}");
+                lines.add(String.format("{\"text\":\"%-13.13s \",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}},{\"text\":\"%s\\n\",\"color\":\"dark_green\"}", name, name, world.getWorldType().toString()));
             }
             Collections.sort(lines, new NaturalOrderComparator());
 
@@ -58,8 +61,6 @@ public class MVBookPlugin extends JavaPlugin {
 
             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta meta = (BookMeta) book.getItemMeta();
-            meta.setTitle("Worlds");
-            meta.setAuthor("");
             BookUtil.setPages(meta, pages);
             book.setItemMeta(meta);
             BookUtil.openBook(book, (Player) sender);
@@ -68,5 +69,12 @@ public class MVBookPlugin extends JavaPlugin {
             sender.sendMessage("Only player can do this");
         }
         return true;
+    }
+
+    private boolean checkPermission(Player player, MultiverseWorld world) {
+        String name = world.getName();
+        return (player.hasPermission("multiverse.teleport.*") || player.hasPermission("multiverse.teleport." + name)) &&
+            permTool.playerCanGoFromTo(worldManager.getMVWorld(player.getLocation().getWorld()), world, null, player) &&
+            player.hasPermission("multiverse.teleport.self." + name);
     }
 }
