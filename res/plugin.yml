@@ -1,0 +1,9 @@
+name: MVBookPlugin
+main: tw.mayortw.mvbook.MVBookPlugin
+version: 0.1
+description: "Multiverse teleporting book"
+author: "R26"
+
+commands:
+    mvbook:
+        usage: "Usage: /<command>"
