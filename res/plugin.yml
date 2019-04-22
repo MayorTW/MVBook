@@ -1,6 +1,6 @@
 name: MVBookPlugin
 main: tw.mayortw.mvbook.MVBookPlugin
-version: 0.1
+version: 0.2
 description: "Multiverse teleporting book"
 author: "R26"
 depend:
