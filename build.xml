@@ -4,7 +4,7 @@
         Move between multivers worlds with a book
     </description>
 
-    <property name="version" value="0.2" />
+    <property name="version" value="0.3" />
 
     <property name="src" location="src"/>
     <property name="build" location="build"/>
