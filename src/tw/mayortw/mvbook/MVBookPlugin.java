@@ -45,13 +45,14 @@ public class MVBookPlugin extends JavaPlugin {
 
             for(MultiverseWorld world : worldManager.getMVWorlds()) {
                 if(!checkPermission((Player) sender, world)) continue;
-                String type = "";
-                if(world.getWorldType() == org.bukkit.WorldType.FLAT) {
-                    type = "FLAT";
-                } else {
-                    type = world.getEnvironment().toString();
-                }
-                lines.add(String.format("{\"text\":\"%-13.13s \",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}},{\"text\":\"%s\\n\",\"color\":\"dark_green\"}", world.getAlias(), world.getName(), type));
+
+                String display = world.getAlias();
+                if(display == null || display == "")
+                    display = world.getName();
+                display = display.replace("\\", "\\\\");
+                display = display.replace("\"", "\\\"");
+
+                lines.add(String.format("{\"text\":\"%s\\n\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}}", display, world.getName()));
             }
             Collections.sort(lines, new NaturalOrderComparator());
 
