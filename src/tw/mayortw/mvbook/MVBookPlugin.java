@@ -54,6 +54,9 @@ public class MVBookPlugin extends JavaPlugin {
 
                 lines.add(String.format("{\"text\":\"%s\\n\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}}", display, world.getName()));
             }
+            if(lines.size() == 0)
+                lines.add("{\"text\":\"無世界\\n\",\"color\":\"black\"}");
+
             Collections.sort(lines, new NaturalOrderComparator());
 
             while(lines.size() > 0) {
@@ -81,6 +84,6 @@ public class MVBookPlugin extends JavaPlugin {
         String name = world.getName();
         return (player.hasPermission("multiverse.teleport.*") || player.hasPermission("multiverse.teleport." + name)) &&
             permTool.playerCanGoFromTo(worldManager.getMVWorld(player.getLocation().getWorld()), world, null, player) &&
-            player.hasPermission("multiverse.teleport.self." + name);
+            player.hasPermission("multiverse.teleport.self");
     }
 }
