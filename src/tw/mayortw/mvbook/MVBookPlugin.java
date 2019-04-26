@@ -82,8 +82,7 @@ public class MVBookPlugin extends JavaPlugin {
 
     private boolean checkPermission(Player player, MultiverseWorld world) {
         String name = world.getName();
-        return (player.hasPermission("multiverse.teleport.*") || player.hasPermission("multiverse.teleport." + name)) &&
-            permTool.playerCanGoFromTo(worldManager.getMVWorld(player.getLocation().getWorld()), world, null, player) &&
-            player.hasPermission("multiverse.teleport.self");
+        return (player.hasPermission("multiverse.teleport.self." + name) || player.hasPermission("multiverse.teleport.self.*")) &&
+            permTool.playerCanGoFromTo(worldManager.getMVWorld(player.getLocation().getWorld()), world, null, player);
     }
 }
