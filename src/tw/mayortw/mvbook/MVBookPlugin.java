@@ -49,8 +49,8 @@ public class MVBookPlugin extends JavaPlugin {
                 String display = world.getAlias();
                 if(display == null || display == "")
                     display = world.getName();
-                display = display.replace("\\", "\\\\");
-                display = display.replace("\"", "\\\"");
+                display = display.replaceAll("\\", "\\\\");
+                display = display.replaceAll("\"", "\\\"");
 
                 lines.add(String.format("{\"text\":\"%s\\n\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}}", display, world.getName()));
             }
