@@ -46,13 +46,10 @@ public class MVBookPlugin extends JavaPlugin {
             for(MultiverseWorld world : worldManager.getMVWorlds()) {
                 if(!checkPermission((Player) sender, world)) continue;
 
-                String display = world.getAlias();
-                if(display == null || display == "")
-                    display = world.getName();
-                display = display.replaceAll("\\", "\\\\");
-                display = display.replaceAll("\"", "\\\"");
+                String name = world.getName();
+                String alias = org.apache.commons.lang.StringEscapeUtils.escapeJavaScript(world.getAlias());
 
-                lines.add(String.format("{\"text\":\"%s\\n\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}}", display, world.getName()));
+                lines.add(String.format("{\"text\":\"%s\\n\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}}", alias, name));
             }
             if(lines.size() == 0)
                 lines.add("{\"text\":\"無世界\\n\",\"color\":\"black\"}");
