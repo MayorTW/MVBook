@@ -47,7 +47,13 @@ public class MVBookPlugin extends JavaPlugin {
                 if(!checkPermission((Player) sender, world)) continue;
 
                 String name = world.getName();
-                String alias = org.apache.commons.lang.StringEscapeUtils.escapeJavaScript(world.getAlias());
+                String alias = world.getAlias();
+
+                final int maxLength = 12;
+                if(alias.length() > maxLength) {
+                    alias = alias.substring(0, maxLength - 6) + "…" + alias.substring(alias.length() - 6);
+                }
+                alias = org.apache.commons.lang.StringEscapeUtils.escapeJavaScript(alias);
 
                 lines.add(String.format("{\"text\":\"%s\\n\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}}", alias, name));
             }
@@ -58,7 +64,7 @@ public class MVBookPlugin extends JavaPlugin {
 
             while(lines.size() > 0) {
                 String page = "[\"\",";
-                for(int i = 0; i < 14 && lines.size() > 0; i++) { // max 14 lines per page
+                for(int i = 0; i < 10 && lines.size() > 0; i++) { // max 10 lines per page
                     page += lines.removeFirst() + ",";
                 }
                 page = page.substring(0, page.length()-1) + "]";
