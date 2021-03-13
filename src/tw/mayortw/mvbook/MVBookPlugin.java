@@ -12,6 +12,11 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -40,8 +45,7 @@ public class MVBookPlugin extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!cmd.getName().equals("mvbook")) return true;
         if (sender instanceof Player) {
-            List<String> pages = new ArrayList<String>();
-            LinkedList<String> lines = new LinkedList<String>();
+            LinkedList<TextComponent> lines = new LinkedList<>();
 
             for(MultiverseWorld world : worldManager.getMVWorlds()) {
                 if(!checkPermission((Player) sender, world)) continue;
@@ -53,29 +57,37 @@ public class MVBookPlugin extends JavaPlugin {
                 if(alias.length() > maxLength) {
                     alias = alias.substring(0, maxLength - 6) + "…" + alias.substring(alias.length() - 6);
                 }
-                alias = org.apache.commons.lang.StringEscapeUtils.escapeJavaScript(alias);
 
-                lines.add(String.format("{\"text\":\"%s\\n\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/mvtp %s\"}}", alias, name));
+                TextComponent line = new TextComponent(alias + "\n");
+                line.setColor(ChatColor.BLACK);
+                line.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mvtp " + name));
+                lines.add(line);
             }
-            if(lines.size() == 0)
-                lines.add("{\"text\":\"無世界\\n\",\"color\":\"black\"}");
+
+            if(lines.size() == 0) {
+                TextComponent line = new TextComponent("無世界\n");
+                line.setColor(ChatColor.BLACK);
+                lines.add(line);
+            }
 
             Collections.sort(lines, new NaturalOrderComparator());
 
+            List<BaseComponent[]> pages = new ArrayList<>();
             while(lines.size() > 0) {
-                String page = "[\"\",";
+                List<TextComponent> page = new ArrayList<>(10);
                 for(int i = 0; i < 10 && lines.size() > 0; i++) { // max 10 lines per page
-                    page += lines.removeFirst() + ",";
+                    page.add(lines.removeFirst());
                 }
-                page = page.substring(0, page.length()-1) + "]";
-                pages.add(page);
+                pages.add(page.toArray(new BaseComponent[0]));
             }
 
             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta meta = (BookMeta) book.getItemMeta();
-            BookUtil.setPages(meta, pages);
+            meta.setAuthor("");
+            meta.setTitle("");
+            meta.spigot().setPages(pages);
             book.setItemMeta(meta);
-            BookUtil.openBook(book, (Player) sender);
+            ((Player) sender).openBook(book);
 
         } else {
             sender.sendMessage("Only player can do this");

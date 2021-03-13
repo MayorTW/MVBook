@@ -1,4 +1,4 @@
-<project name="mvbook" default="dist" basedir=".">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="mvbook" default="dist" basedir=".">
 
     <description>
         Move between multivers worlds with a book
@@ -18,9 +18,16 @@
       </fileset>
     </path>
 
+    <target name="resolve">
+        <ivy:retrieve />
+        <ivy:dependencytree/>
+    </target>
+
     <target name="compile">
         <mkdir dir="${build}" />
-        <javac srcdir="${src}" destdir="${build}" classpathref="classpath" includeantruntime="false"/>
+        <javac srcdir="${src}" destdir="${build}" classpathref="classpath" includeantruntime="false">
+            <compilerarg value="-Xlint:all" />
+        </javac>
     </target>
 
     <target name="dist" depends="compile">
