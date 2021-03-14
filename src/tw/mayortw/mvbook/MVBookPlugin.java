@@ -2,6 +2,7 @@ package tw.mayortw.mvbook;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -70,7 +71,7 @@ public class MVBookPlugin extends JavaPlugin {
                 lines.add(line);
             }
 
-            Collections.sort(lines, new NaturalOrderComparator());
+            Collections.sort(lines, Comparator.comparing(TextComponent::getText));
 
             List<BaseComponent[]> pages = new ArrayList<>();
             while(lines.size() > 0) {
